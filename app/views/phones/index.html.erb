@@ -1,0 +1,34 @@
+<% if current_user&.admin? %>
+  <div class="ms-2 me-3 mt-3 ">
+    <%= form_with url: import_phones_path, method: :post, html: { class: 'import-form', data: { turbo: false }, multipart: true } do |form| %>
+  <div class="mb-3">
+    <%= form.file_field :file, class: "form-control" %>
+  </div>
+  <%= form.submit "Импортировать", class: "btn btn-primary" %>
+<% end %>
+
+
+    <div class="d-flex gap-2 mt-3">
+    <%= link_to 'Добавить', new_phone_path, class: "btn btn-primary text-white text-decoration-none", data: { turbo_frame: "_top" } %>  
+    <%= link_to 'Экспорт', phones_path(format: :xlsx), 
+            class: "btn btn-primary text-white text-decoration-none download-file", 
+            data: { turbo_frame: "_top", disable_with: 'Пожалуйста, подождите...' } %>
+    <%= button_to "Удалить все", 
+        delete_all_phones_path, 
+        id: "delete-all-button",
+        class: "btn btn-danger text-white text-decoration-none delete-button", 
+        method: 'delete',
+        data: { turbo_frame: "_top", turbo_method: 'delete', turbo_confirm: "вы уверены?" } %>
+    </div>
+  </div>
+<% end %>
+
+<div class="ms-2 me-3 mt-3 ">
+  <%= form_with(url: phones_path, method: :get, data: {controller: "search-form", turbo_frame: "phones", turbo_action: "advance"}) do |form| %>
+    <div class="flex space-x-3">
+      <%= form.text_field :query, placeholder: "Поиск по телефонам", autocomplete: "off", class: "form-control me-2", type: "search", placeholder: "Поиск по телефонам", data: {action: "input->search-form#search"} %>
+    </div>
+  <% end %>
+</div>  
+
+<%= render partial: "phones", locals: { phones: @phones, department: params[:department] } %>

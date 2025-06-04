@@ -1,0 +1,85 @@
+<turbo-frame id="phones">
+
+<div class="ms-2 me-3 mt-3 ">
+<!-- Заголовок в зависимости от выбранного department -->
+
+<h1>
+  <% if params[:department].present? %>
+    <%= params[:department] %>
+  <% else %>
+    Все телефоны
+  <% end %>
+</h1>
+
+<!-- Подзаголовок с условиями -->
+<% if params[:department].present? %>
+  <% subheader = case params[:department]
+    when "НЬЮТОН-ПЛАЗА"
+      "общий номер 7 (495) 280‒10‒10"
+    when "НАВИГАТОР"
+      "общий номер +7 (495) 225‒82‒20"
+    when "ЗИЛ"
+      "общий номер +7 (499) 640‒04‒00"
+    else
+      nil
+    end %>
+  <% if subheader %>
+    <h2 class="text-muted"><%= subheader %></h2>
+  <% end %>
+<% end %>
+</div>
+
+    <!-- Основная таблица с добавленным классом table-responsive -->
+    <div class="table-responsive">
+    <table class="table table-sm table-hover text-nowrap table-striped mt-3 mb-3 d-none d-md-table">
+      <tbody>
+        <% phones.select { |phone| params[:department].blank? || phone.department == params[:department] }.each do |phone| %>
+          <tr id="<%= dom_id(phone) %>">
+            <td class="border"><%= phone.name %></td>
+            <td class="border"><%= phone.position %></td>
+            <td class="border"><%= phone.number %></td>
+            <td class="border"><%= phone.mobile %></td>
+            <td class="border"><%= phone.mail %></td>
+            <% if current_user&.admin? %>
+              <td class="border text-center">
+                <div class="d-flex gap-2 justify-content-center">
+                  <%= link_to edit_phone_path(phone), class: "btn btn-sm btn-outline-primary", title: "Редактировать", data: { turbo_frame: "_top" } do %>
+                    <i class="bi bi-pencil"></i>
+                  <% end %>
+                  <%= button_to phone_path(phone), method: :delete, class: "btn btn-sm btn-outline-danger", title: "Удалить запись", data: { turbo_frame: "_top", turbo_confirm: "Вы уверены?" } do %>
+                    <i class="bi bi-trash"></i>
+                  <% end %>
+                </div>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <!-- Структура для мобильных устройств -->
+  <div class="d-block d-md-none">
+    <% phones.select { |phone| params[:department].blank? || phone.department == params[:department] }.each do |phone| %>
+      <div class="border rounded p-3 mt-3 mb-3" id="<%= dom_id(phone) %>">
+        <p><strong>ФИО:</strong> <%= phone.name %></p>
+        <p><strong>Должность:</strong> <%= phone.position %></p>
+        <p><strong>Внутренний:</strong> <%= phone.number %></p>
+        <p><strong>Мобильный:</strong> 
+          <%= link_to phone.mobile, "tel:#{phone.mobile}" if phone.mobile.present? %>
+        </p>
+        <p><strong>Электронка:</strong> 
+          <%= mail_to phone.mail, phone.mail if phone.mail.present? %>
+        </p>
+        <% if current_user&.admin? %>
+          <div class="d-flex gap-2 justify-content-start">
+            <%= link_to edit_phone_path(phone), class: "btn btn-sm btn-outline-primary", title: "Редактировать", data: { turbo_frame: "_top"} do %>
+              <i class="bi bi-pencil"></i> Редактировать
+            <% end %>
+              <%= button_to phone_path(phone), method: :delete, class: "btn btn-sm btn-outline-danger", title: "Удалить запись", data: { turbo_frame: "_top", turbo_confirm: "Вы уверены?" } do %>
+              <i class="bi bi-trash"></i> Удалить
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</turbo-frame>
