@@ -146,6 +146,10 @@ class PostsController < ApplicationController
   before_action :authorize_admin, only: [:edit, :update, :destroy]
 
   # Только администратор может редактировать и удалять
+
+  def edit
+      @post = Post.find(params[:id])
+  end
   
   private
 
@@ -166,12 +170,6 @@ end
   <%= button_to "Удалить эту запись", @post, method: :delete, data: { turbo_method: 'delete', turbo_confirm: "вы уверены?" } %>
 
 <% end %>
-```
-Теперь в контроллер нужно добавить
-```erb
-def edit
-    @post = Post.find(params[:id])
-end
 ```
 В application.html.erb нужно добавить
 ``` erb
