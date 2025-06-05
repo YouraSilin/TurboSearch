@@ -241,6 +241,8 @@ end
       </div>
     <% end %>
 
+    <%= render "shared/spinner" %>
+
     <!-- Кнопка наверх -->
     <button id="scroll-to-top" class="scroll-button" style="display: none;">Наверх  </button>
 
