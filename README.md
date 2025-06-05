@@ -94,9 +94,7 @@ enum role: { viewer: 'viewer', admin: 'admin' }
 # Зададим роль по умолчанию
 
 after_initialize do
-
   self.role ||= :viewer
-  
 end
   
 end
