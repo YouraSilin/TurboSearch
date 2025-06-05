@@ -31,9 +31,13 @@ https://github.com/YouraSilin/TurboSearch/blob/master/Dockerfile
 
 https://github.com/YouraSilin/TurboSearch/blob/master/Gemfile
 ```bash
-cd app/assets/images/
+cd ~/devise/app/assets/images/
 
 wget https://raw.githubusercontent.com/YouraSilin/TurboSearch/refs/heads/master/app/assets/images/bars.svg
+
+cd ~/devise/app/views/shared/
+
+wget https://raw.githubusercontent.com/YouraSilin/TurboSearch/refs/heads/master/app/views/shared/_spinner.html.erb
 
 cd ~/devise
 
