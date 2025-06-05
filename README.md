@@ -142,9 +142,7 @@ class PostsController < ApplicationController
   private
 
   def authorize_admin
-  
     redirect_to posts_path, alert: 'У вас нет прав для этого действия.' unless current_user&.admin?
-  
   end
 
 end
