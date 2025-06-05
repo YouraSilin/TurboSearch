@@ -1,24 +1,22 @@
 ```bash
 mkdir devise
 
-git clone https://github.com/YouraSilin/TurboSearch.git devise
-
 cd devise
-```
-delete all folders and files except
 
-docker-compose.yml
+wget https://raw.githubusercontent.com/YouraSilin/TurboSearch/refs/heads/master/Dockerfile
 
-Dockerfile
+wget https://raw.githubusercontent.com/YouraSilin/TurboSearch/refs/heads/master/Gemfile
 
-entrypoint.sh
+wget https://raw.githubusercontent.com/YouraSilin/TurboSearch/refs/heads/master/Procfile.dev
 
-Gemfile
+wget https://raw.githubusercontent.com/YouraSilin/TurboSearch/refs/heads/master/docker-compose.yml
 
-package.json
+wget https://raw.githubusercontent.com/YouraSilin/TurboSearch/refs/heads/master/entrypoint.sh
 
-Procfile.dev
-```bash
+wget https://raw.githubusercontent.com/YouraSilin/TurboSearch/refs/heads/master/package.json
+
+touch Gemfile.lock
+
 docker compose build
 
 docker compose run --no-deps web rails new . --force --database=postgresql --css=bootstrap
