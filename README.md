@@ -244,22 +244,6 @@ end
     <!-- Кнопка наверх -->
     <button id="scroll-to-top" class="scroll-button" style="display: none;">Наверх  </button>
 
-    <!-- Первый вариант скрипта сообщений -->
-    <script type="module">
-      import $ from "jquery";
-
-      $(document).ready(function() {
-        // Показываем уведомление
-        $(".alert").css("display", "block").css("opacity", "1").css("animation", "fadeInFromNone 1.2s");
-
-        // Автоматическое скрытие через 2 секунды
-        setTimeout(function() {
-          $(".alert").fadeOut(1200);
-        }, 2000);
-      });
-    </script>
-
-    <!-- Второй вариант скрипта сообщений -->
     <script type="module">
         document.addEventListener("turbo:load", () => {
           // Показываем уведомления
@@ -282,8 +266,7 @@ end
           });
         });
       </script>
-
-    <script type="module">
+      <script type="module">
       document.addEventListener("turbo:load", () => {
         const scrollToTopButton = document.getElementById("scroll-to-top");
 
@@ -310,6 +293,84 @@ end
         });
       });
     </script>
+    
+    <script>
+      document.addEventListener("turbo:load", function () {
+        const showSpinner = () => {
+          const spinnerOverlay = document.getElementById("spinner-overlay");
+            if (spinnerOverlay) {
+              spinnerOverlay.style.visibility = "visible"; // Сначала делаем элемент видимым
+              requestAnimationFrame(() => {
+                spinnerOverlay.style.opacity = "1"; // Затем плавно показываем спиннер
+                spinnerOverlay.style.animation = "fadeInFromNone 1.2s"
+              });
+              document.body.style.overflow = "hidden"; // Блокируем прокрутку
+            }
+        };
+
+        const hideSpinner = () => {
+          const spinnerOverlay = document.getElementById("spinner-overlay");
+          if (spinnerOverlay) {
+            spinnerOverlay.style.opacity = "0"; // Плавно убираем спиннер
+            // Скрываем элемент после завершения анимации (например, через 300 мс)
+            setTimeout(() => {
+                spinnerOverlay.style.visibility = "hidden";
+                document.body.style.overflow = ""; // Разблокируем прокрутку
+            }, 300); // Время совпадает с длительностью transition
+          }
+        };
+
+        const delayedHideSpinner = () => {
+          setTimeout(hideSpinner, 1200); // Добавляем задержку в 1200 мс
+        };
+
+        // Показываем спиннер при отправке формы импорта
+        document.querySelectorAll("form.import-form").forEach((form) => {
+          form.addEventListener("submit", () => {
+            showSpinner();
+
+            // Прячем спиннер через событие 'submit-end' (например, если используется Turbo)
+            document.addEventListener("turbo:submit-end", delayedHideSpinner, { once: true });
+          });
+        });
+
+        // Показываем спиннер при клике на ссылки для скачивания файлов
+        document.querySelectorAll("a.download-file").forEach((link) => {
+          link.addEventListener("click", async (event) => {
+          showSpinner();
+          try {
+            const url = event.target.href;
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const tempLink = document.createElement("a");
+            tempLink.href = downloadUrl;
+            tempLink.download = link.getAttribute("data-filename") || "downloaded-file";
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            tempLink.remove();
+            window.URL.revokeObjectURL(downloadUrl);
+          } catch (error) {
+            console.error("Ошибка при скачивании файла:", error);
+          } finally {
+            hideSpinner();
+          }
+
+          event.preventDefault(); // Предотвращение стандартного поведения
+          });
+        });
+
+        // Показываем спиннер при клике на кнопку с class "delete-button"
+        document.querySelectorAll(".delete-button").forEach((button) => {
+          button.addEventListener("click", () => {
+          showSpinner();
+
+          // Прячем спиннер через событие 'turbo:submit-end'
+          document.addEventListener("turbo:submit-end", delayedHideSpinner, { once: true });
+        });
+      });
+    });
+</script>
 ```
 Добавление администратоа
 ```bash
